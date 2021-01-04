@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from app import app, db
+from app import db
 
 posts_tags_table = db.Table(
     'posts_tags_table', db.Model.metadata,
     db.Column('post_id', db.String, db.ForeignKey('post.id')),
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
 )
+
 
 class Post(db.Model):
     __tablename__ = 'post'
@@ -18,6 +19,7 @@ class Post(db.Model):
 
     def __str__(self):
         return self.title
+
 
 class Tag(db.Model):
     __tablename__ = 'tag'

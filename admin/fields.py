@@ -1,15 +1,15 @@
 from wtforms import widgets
 from flask_admin.form import Select2TagsField
 
-from app import app, db
-from models import *
+from models import Tag
+
 
 class AdvancedTagWidget(widgets.Select):
     """
         `Select2 <https://github.com/select2/select2>`_ styled select widget.
 
-        You must include select2.js, form-x.x.x.js and select2 stylesheet for it to
-        work.
+        You must include select2.js, form-x.x.x.js and select2 stylesheet
+        for it to work.
     """
     def __call__(self, field, **kwargs):
         # For select2 v4:
@@ -30,7 +30,6 @@ class AdvancedTagField(Select2TagsField):
     """
 
     widget = AdvancedTagWidget(multiple=True)
-
 
     def pre_validate(self, form):
         # Prevent "not a valid choice" error
@@ -57,12 +56,12 @@ class AdvancedTagField(Select2TagsField):
         self.blank_text = ""
 
         tags = list(set([str(tag.name) for tag in Tag.query.all()]))
-        model_tags = [tag.name for tag in self.object_data]
+        model_tags = [tag.name for tag in (self.object_data or [])]
 
         self.choices = [[tag, tag] for tag in tags]
 
         # Yield empty object in order to have an empty placeholder
-        yield (u'__None', self.blank_text, self.data is None)
+        yield (u'__None', self.blank_text, False)
 
         for value, label in self.choices:
             yield (value, label, value in model_tags)
